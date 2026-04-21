@@ -25,7 +25,8 @@ import { getBrandLogoURL } from 'src/app/shared/station-utils';
 export class StationDetailPage implements OnInit {
   station!: Station;
 
-  constructor(private router: Router,
+  constructor(
+    private router: Router,
     private route: ActivatedRoute) {
     addIcons({ locationOutline, timeOutline, cardOutline, constructOutline });
   }
@@ -34,7 +35,7 @@ export class StationDetailPage implements OnInit {
     this.station = history.state?.station;
 
     if (!this.station) {
-      console.warn('Нет данных станции в состоянии маршрута. Пытаемся загрузить по ID из URL...');
+      console.warn('No station data in route state. Trying to load by ID from URL...');
       const id = this.route.snapshot.paramMap.get('id');
 
       if (id) {
@@ -44,10 +45,7 @@ export class StationDetailPage implements OnInit {
   }
 
   private loadStationById(id: string) {
-    // Здесь можно реализовать логику загрузки станции по ID
-    // Например, вызвать сервис, который хранит все станции, и найти нужную
-    // this.station = this.stationService.getStationById(id);
-    console.warn('Загрузка станции по ID не реализована. ID:', id);
+    console.warn('Load station by id is not implemented yet. ID:', id);
   }
 
   getLogoUrl(brand: string | null): string | null {
