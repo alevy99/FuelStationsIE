@@ -1,8 +1,6 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title>
-      Fuel Stations Ireland
-    </ion-title>
+    <ion-title>Fuel Stations Ireland</ion-title>
   </ion-toolbar>
 </ion-header>
 
@@ -10,15 +8,28 @@
 
   <ion-item>
     <ion-label>Select County</ion-label>
-    <ion-select placeholder="Select..." [(ngModel)]="selectedCounties" interface="popover"
-      multiple="true" (ionDismiss)="onCountyChange()">       
-      @for (county of counties; track county) {
-        <ion-select-option [value]="county.value">
-          {{ county.label }}
-        </ion-select-option>
+    <ion-select placeholder="Select..." [(ngModel)]="selectedCounties" interface="popover" [multiple]="true"
+      (ionDismiss)="onCountyChange()">
+      @for (county of counties; track county.value) {
+      <ion-select-option [value]="county.value">{{ county.label }}</ion-select-option>
       }
     </ion-select>
   </ion-item>
 
-  
+  @if (loading) {
+  <div class="loading-wrap">
+    <ion-spinner name="crescent"></ion-spinner>
+  </div>
+  }
+
+  @if (!loading && results.length === 0 && selectedCounties.length > 0) {
+  <div class="empty">
+    No stations found
+  </div>
+  }
+
+  @for (station of results; track station.id) {
+  <app-station-card [station]="station"></app-station-card>
+  }
+
 </ion-content>
