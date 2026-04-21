@@ -25,3 +25,16 @@
 #container a {
   text-decoration: none;
 }
+
+.loading-wrap {
+  display: flex;
+  justify-content: center;
+  padding: 32px;
+}
+
+.empty {
+  text-align: center;
+  padding: 32px;
+  color: var(--ion-color-medium);
+  font-size: 14px;
+}
