@@ -47,14 +47,11 @@ out center;
 `;
   }
 
-  private mapElement(el: any): Station | null {
+  private isValidElement(el: any): boolean {
     const t = el.tags ?? {};
 
-    // Фильтруем: нет названия И нет бренда — пропускаем
-    if (!t['name'] && !t['brand']) return null;
-
-    // Фильтруем заброшенные
-    if (t['abandoned:amenity'] === 'fuel') return null;
+    if (!t['name'] && !t['brand']) return false;
+    if (t['abandoned:amenity'] === 'fuel') return false;
 
     const hasUnleaded =
       t['fuel:octane_95'] === 'yes' ||
@@ -64,18 +61,32 @@ out center;
 
     const hasDiesel = t['fuel:diesel'] === 'yes';
 
-    // Если явно указано что НЕТ ни одного топлива — пропускаем
-    // (но если теги просто отсутствуют — оставляем, данные неполные)
     const fuelTagsPresent =
       'fuel:diesel' in t || 'fuel:octane_95' in t ||
       'fuel:octane_98' in t || 'fuel:unleaded' in t || 'fuel:petrol' in t;
 
-    if (fuelTagsPresent && !hasUnleaded && !hasDiesel) return null;
+    if (fuelTagsPresent && !hasUnleaded && !hasDiesel) return false;
 
     const lat = el.lat ?? el.center?.lat;
     const lon = el.lon ?? el.center?.lon;
+    if (!lat || !lon) return false;
 
-    if (!lat || !lon) return null;
+    return true;
+  }
+
+  private mapElement(el: any): Station {
+    const t = el.tags ?? {};
+
+    const hasUnleaded =
+      t['fuel:octane_95'] === 'yes' ||
+      t['fuel:octane_98'] === 'yes' ||
+      t['fuel:unleaded'] === 'yes' ||
+      t['fuel:petrol'] === 'yes';
+
+    const hasDiesel = t['fuel:diesel'] === 'yes';
+
+    const lat = el.lat ?? el.center?.lat;
+    const lon = el.lon ?? el.center?.lon;
 
     return {
       id: el.id,
@@ -105,27 +116,25 @@ out center;
     };
   }
 
-  getStationsByCounties(counties: string[]): Observable<any> {
+  getStationsByCounties(counties: string[]): Observable<Station[]> {
     const query = this.buildQuery(counties);
     console.log('Query:', query);
 
-    return this.http.post<any>(this.apiUrl, query, {
+    return this.getStationsFromHttpResponse(this.http.post<any>(this.apiUrl, query, {
       headers: { 'Content-Type': 'text/plain' }
-    }).pipe(
-      map(res =>
-        (res.elements as any[])
-          .map(el => this.mapElement(el))
-          .filter((s): s is Station => s !== null)
-      )
-    );
+    }));
   }
 
-  getStationsFromJsonBlob() {
-    return this.http.get<any>(this.jsonBlobUrl).pipe(
+  getStationsFromJsonBlob(): Observable<Station[]> {
+    return this.getStationsFromHttpResponse(this.http.get<any>(this.jsonBlobUrl));
+  }
+
+  getStationsFromHttpResponse(result: Observable<any>): Observable<Station[]> {
+    return result.pipe(
       map(res =>
         (res.elements as any[])
+          .filter(el => this.isValidElement(el))
           .map(el => this.mapElement(el))
-          .filter((s): s is Station => s !== null)
       )
     );
   }
