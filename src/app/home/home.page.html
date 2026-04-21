@@ -1,20 +1,24 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
     <ion-title>
-      Blank
+      Fuel Stations Ireland
     </ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Blank</ion-title>
-    </ion-toolbar>
-  </ion-header>
 
-  <div id="container">
-    <strong>Ready to create an app?</strong>
-    <p>Start with Ionic <a target="_blank" rel="noopener noreferrer" href="https://ionicframework.com/docs/components">UI Components</a></p>
-  </div>
+  <ion-item>
+    <ion-label>Select County</ion-label>
+    <ion-select placeholder="Select..." [(ngModel)]="selectedCounties" interface="popover"
+      multiple="true" (ionDismiss)="onCountyChange()">       
+      @for (county of counties; track county) {
+        <ion-select-option [value]="county.value">
+          {{ county.label }}
+        </ion-select-option>
+      }
+    </ion-select>
+  </ion-item>
+
+  
 </ion-content>
