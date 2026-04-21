@@ -1,0 +1,29 @@
+<ion-card class="station-card" button (click)="openDetail()">
+  <ion-ripple-effect></ion-ripple-effect>
+  <ion-card-content>
+
+    <div class="card-row">
+      <div class="logo-wrap logo-wrap--small">
+        @if (getLogoUrl(station.brand)) {
+        <img [src]="getLogoUrl(station.brand)" [alt]="station.brand ?? ''" (error)="logoImg.style.display='none'" #logoImg />
+        } @else {
+        <span class="logo-fallback">⛽</span>
+        }
+      </div>
+
+      <div class="card-info">
+        <p class="station-name">{{ station.name }}</p>
+        <p class="station-address" *ngIf="station.address || station.city">
+          {{ station.address }}{{ station.address && station.city ? ', ' : '' }}{{ station.city }}
+        </p>
+        <p class="station-coords">{{ coords }}</p>
+      </div>
+
+      <div class="fuel-badges">
+        <ion-badge *ngIf="station.hasUnleaded" color="success">Unleaded</ion-badge>
+        <ion-badge *ngIf="station.hasDiesel" color="primary">Diesel</ion-badge>
+      </div>
+    </div>
+
+  </ion-card-content>
+</ion-card>
