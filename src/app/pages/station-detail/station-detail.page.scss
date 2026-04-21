@@ -1,0 +1,51 @@
+.detail-hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 24px 16px 16px;
+  gap: 8px;
+
+  h2 {
+    font-size: 22px;
+    font-weight: 700;
+    margin: 0;
+    text-align: center;
+  }
+
+  .operator {
+    font-size: 13px;
+    color: var(--ion-color-medium);
+    margin: 0;
+  }
+
+  .fuel-badges {
+    display: flex;
+    gap: 8px;
+    margin-top: 4px;
+  }
+}
+
+.logo-wrap--large {
+  width: 96px;
+  height: 96px;
+  border-radius: 20px;
+  background: var(--ion-color-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    padding: 8px;
+  }
+
+  .logo-fallback { font-size: 48px; }
+}
+
+.coords {
+  font-variant-numeric: tabular-nums;
+  font-size: 13px;
+}
