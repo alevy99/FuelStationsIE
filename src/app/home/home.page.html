@@ -36,7 +36,10 @@
   }
 
   @for (fuelStation of fuelStations; track fuelStation.id) {
-  <app-station-card [station]="fuelStation"></app-station-card>
-  }
+  <app-station-card 
+    [station]="fuelStation"
+    [fuelPrice]="fuelPrices[fuelStation.id]">
+  </app-station-card>
+}
 
 </ion-content>
