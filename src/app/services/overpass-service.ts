@@ -16,13 +16,13 @@ export class OverpassService {
 
   constructor(private http: HttpClient) { }
 
-  private buildQuery(
-    selectedValues: string[],
+  private buildQueryByCounties(
+    selectedCountiesStr: string[],
     amenity: string = 'fuel'
   ): string {
 
     const selectedCounties = COUNTIES
-      .filter(c => selectedValues.includes(c.value));
+      .filter(c => selectedCountiesStr.includes(c.value));
 
     const areaPart = selectedCounties
       .map(c =>
@@ -46,6 +46,22 @@ ${nwrPart}
 out center;
 `;
   }
+
+  buildQueryByPosition(
+    lat: number,
+    lon: number,
+    radius: number,
+    amenity: string = 'fuel'
+  ): string {
+    return `
+[out:json][timeout:25];
+(
+  nwr["amenity"="${amenity}"](around:${radius * 1000},${lat},${lon});
+);
+out center;
+`;
+  }
+
 
   private isValidElement(el: any): boolean {
     const t = el.tags ?? {};
@@ -116,9 +132,18 @@ out center;
   }
 
   getStationsByCounties(counties: string[]): Observable<Station[]> {
-    const query = this.buildQuery(counties);
+    const query = this.buildQueryByCounties(counties);
     console.log('Query:', query);
 
+    return this.getStationsFromHttpResponse(this.http.post<any>(this.apiUrl, query, {
+      headers: { 'Content-Type': 'text/plain' }
+    }));
+  }
+
+  getStationsNearPosition(lat: number, lon: number, radius: number): Observable<Station[]> {
+    const query = this.buildQueryByPosition(lat, lon, radius);
+    console.log('Query for stations near position (${lat}, ${lon}):', query);
+    
     return this.getStationsFromHttpResponse(this.http.post<any>(this.apiUrl, query, {
       headers: { 'Content-Type': 'text/plain' }
     }));
