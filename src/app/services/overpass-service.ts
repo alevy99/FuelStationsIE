@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { map, Observable } from 'rxjs';
+import { map, Observable, tap } from 'rxjs';
 import { COUNTIES } from '../shared/counties';
 import { Station } from '../models/station.model';
 
@@ -131,6 +131,7 @@ out center;
 
   getStationsFromHttpResponse(resStream: Observable<any>): Observable<Station[]> {
     return resStream.pipe(
+      tap(res => console.log('Raw response:', res)),
       map(res =>
         (res.elements as any[])
           .filter(el => this.isValidElement(el))
