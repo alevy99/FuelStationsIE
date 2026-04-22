@@ -51,7 +51,6 @@ out center;
     const t = el.tags ?? {};
 
     if (!t['name'] && !t['brand']) return false;
-    if (t['abandoned:amenity'] === 'fuel') return false;
 
     const hasUnleaded =
       t['fuel:octane_95'] === 'yes' ||
