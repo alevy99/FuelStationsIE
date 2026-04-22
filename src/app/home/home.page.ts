@@ -1,17 +1,17 @@
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import {
-  IonHeader, IonToolbar, IonTitle, IonContent,
-  IonItem, IonLabel, IonSelect, IonSelectOption,
-  IonSpinner
-} from '@ionic/angular/standalone';
+import { IonHeader, IonToolbar, IonTitle, IonContent, IonItem, IonLabel, IonSelect, IonSelectOption, IonSpinner, IonButton, IonRange, IonIcon } from '@ionic/angular/standalone';
 import { Storage } from '@ionic/storage-angular';
+import { Geolocation } from '@capacitor/geolocation';
 
 import { COUNTIES, County } from '../shared/counties';
 import { OverpassService } from '../services/overpass-service';
 import { Station } from '../models/station.model';
 import { StationCardComponent } from '../components/station-card/station-card.component';
+import { addIcons } from 'ionicons';
+import { locationOutline } from 'ionicons/icons';
+import { Observable } from 'rxjs';
 
 
 @Component({
@@ -22,23 +22,42 @@ import { StationCardComponent } from '../components/station-card/station-card.co
     CommonModule, FormsModule,
     IonHeader, IonToolbar, IonTitle, IonContent,
     IonItem, IonLabel, IonSelect, IonSelectOption,
-    IonSpinner, StationCardComponent
+    IonSpinner, StationCardComponent,
+    IonButton, IonRange,
+    IonIcon
   ],
 })
 export class HomePage {
   counties: County[] = COUNTIES;
   selectedCounties: string[] = [];
-  results: Station[] = [];
+  fuelStations: Station[] = [];
   loading = false;
 
-  constructor(private overpassService: OverpassService, private storage: Storage) {}
+  coordinates: any = "";
+  lat: number = 0;
+  long: number = 0;
+  radius: number = 10;
+
+  constructor(private overpassService: OverpassService, private storage: Storage) {
+    addIcons({ locationOutline });
+  }
 
   async ionViewWillEnter() {
     console.log('HomePage ionViewWillEnter');
     await this.storage.create();
     this.selectedCounties = await this.storage.get('selectedCounties') || [];
     console.log('Loaded selected counties from storage:', this.selectedCounties);
-    this.loadData();
+    if (this.selectedCounties.length > 0) {
+      this.loadData();
+    }
+  }
+
+  async getGPS() {
+    this.coordinates = await Geolocation.getCurrentPosition();
+    this.lat = this.coordinates.coords.latitude;
+    this.long = this.coordinates.coords.longitude;
+    console.log('Current position:', this.coordinates);
+    this.loadData(true);
   }
 
   onCountyChange() {
@@ -52,21 +71,31 @@ export class HomePage {
     console.log('Updated selected counties in storage:', this.selectedCounties);
   }
 
-  private loadData() {
-    if (this.selectedCounties.length === 0) return;
+  private loadData(nearMe: boolean = false) {
+    if (!nearMe && this.selectedCounties.length === 0) return;
 
     this.loading = true;
 
-    this.loadFromJsonBlob();
-    return;
-    this.overpassService.getStationsByCounties(this.selectedCounties).subscribe({
+    // this.loadFromJsonBlob();
+    // return;
+
+    let observableStations: Observable<Station[]>;
+
+    if (nearMe) {
+      observableStations = this.overpassService.getStationsNearPosition(this.lat, this.long, this.radius);
+    } else {
+      observableStations = this.overpassService.getStationsByCounties(this.selectedCounties);
+    }
+
+    observableStations.subscribe({
       next: (stations) => {
-        this.results = stations;
+        this.fuelStations = stations;
         this.loading = false;
+        console.log('Loaded stations:', stations);
       },
       error: (err) => {
         console.error('Overpass API error:', err);
-        this.loading = false;
+        this.loading = false; 
         this.loadFromJsonBlob();
       }
     });
@@ -76,7 +105,7 @@ export class HomePage {
     this.loading = true;
     this.overpassService.getStationsFromJsonBlob().subscribe({
       next: (stations) => {
-        this.results = stations;
+        this.fuelStations = stations;
         this.loading = false;
       },
       error: (err) => {
