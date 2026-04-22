@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { Router } from '@angular/router';
-import { IonCard, IonCardContent, IonBadge, IonRippleEffect } from '@ionic/angular/standalone';
+import { IonCard, IonCardContent, IonBadge } from '@ionic/angular/standalone';
 import { CommonModule } from '@angular/common';
 import { Station } from '../../models/station.model';
 import { getBrandLogoURL } from 'src/app/shared/station-utils';
@@ -9,10 +9,10 @@ import { getBrandLogoURL } from 'src/app/shared/station-utils';
   selector: 'app-station-card',
   templateUrl: './station-card.component.html',
   styleUrls: ['./station-card.component.scss'],
-  imports: [CommonModule, IonCard, IonCardContent, IonBadge, IonRippleEffect],
+  imports: [CommonModule, IonCard, IonCardContent, IonBadge],
 })
 export class StationCardComponent {
-  @Input() station!: Station;
+  @Input() station !: Station;
 
   constructor(private router: Router) {}
 
