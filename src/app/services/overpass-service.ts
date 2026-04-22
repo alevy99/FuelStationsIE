@@ -129,8 +129,8 @@ out center;
     return this.getStationsFromHttpResponse(this.http.get<any>(this.jsonBlobUrl));
   }
 
-  getStationsFromHttpResponse(result: Observable<any>): Observable<Station[]> {
-    return result.pipe(
+  getStationsFromHttpResponse(resStream: Observable<any>): Observable<Station[]> {
+    return resStream.pipe(
       map(res =>
         (res.elements as any[])
           .filter(el => this.isValidElement(el))
