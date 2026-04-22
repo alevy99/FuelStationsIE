@@ -65,6 +65,26 @@
     </ion-item>
     }
 
+    <ion-item>
+      <ion-icon name="pricetag-outline" slot="start" color="medium"></ion-icon>
+      <ion-label>
+        <p>Fuel Prices</p>
+        @if (fuelPrice) {
+          <h3>
+            @if (fuelPrice.petrol !== null) {
+              <span>Unleaded: €{{ fuelPrice.petrol.toFixed(2) }} · </span>
+            }
+            @if (fuelPrice.diesel !== null) {
+              <span>Diesel: €{{ fuelPrice.diesel.toFixed(2) }}</span>
+            }
+          </h3>
+          <p class="price-timestamp">Updated: {{ fuelPrice.timestamp | date:'dd MMM yyyy, HH:mm' }}</p>
+        } @else {
+          <h3>No prices reported yet</h3>
+        }
+      </ion-label>
+    </ion-item>
+
     @if (station.payment.cash !== null || station.payment.creditCards !== null) {
     <ion-item>
       <ion-icon name="card-outline" slot="start" color="medium"></ion-icon>

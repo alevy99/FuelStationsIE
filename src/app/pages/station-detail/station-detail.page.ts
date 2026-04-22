@@ -1,22 +1,24 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { CommonModule } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 import {
   IonHeader, IonToolbar, IonTitle, IonContent,
   IonBackButton, IonButtons, IonBadge, IonItem,
   IonLabel, IonIcon, IonList
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
-import { locationOutline, timeOutline, cardOutline, constructOutline } from 'ionicons/icons';
+import { locationOutline, timeOutline, cardOutline, constructOutline, pricetagOutline  } from 'ionicons/icons';
 import { Station } from '../../models/station.model';
 import { getBrandLogoURL } from 'src/app/shared/station-utils';
+import { FuelPricesService, FuelPrice } from '../../services/fuel-prices-service';
+
 
 @Component({
   selector: 'app-station-detail',
   templateUrl: './station-detail.page.html',
   styleUrls: ['./station-detail.page.scss'],
   imports: [
-    CommonModule,
+    CommonModule, DatePipe,
     IonHeader, IonToolbar, IonTitle, IonContent,
     IonBackButton, IonButtons, IonBadge,
     IonItem, IonLabel, IonIcon, IonList
@@ -24,11 +26,13 @@ import { getBrandLogoURL } from 'src/app/shared/station-utils';
 })
 export class StationDetailPage implements OnInit {
   station!: Station;
+  fuelPrice: FuelPrice | null = null;
 
   constructor(
     private router: Router,
-    private route: ActivatedRoute) {
-    addIcons({ locationOutline, timeOutline, cardOutline, constructOutline });
+    private route: ActivatedRoute,
+    private fuelPricesService: FuelPricesService) {
+    addIcons({ locationOutline, timeOutline, cardOutline, constructOutline, pricetagOutline  });
   }
 
   ngOnInit() {
@@ -41,7 +45,16 @@ export class StationDetailPage implements OnInit {
       if (id) {
         this.loadStationById(id);
       }
+    } else {
+      this.loadPrices();
     }
+  }
+
+  private loadPrices() {
+    this.fuelPricesService.getPrices(String(this.station.id))
+      .subscribe(price => {
+        this.fuelPrice = price;
+      });
   }
 
   private loadStationById(id: string) {
