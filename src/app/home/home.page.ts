@@ -4,14 +4,15 @@ import { CommonModule } from '@angular/common';
 import { IonHeader, IonToolbar, IonTitle, IonContent, IonItem, IonLabel, IonSelect, IonSelectOption, IonSpinner, IonButton, IonRange, IonIcon } from '@ionic/angular/standalone';
 import { Storage } from '@ionic/storage-angular';
 import { Geolocation } from '@capacitor/geolocation';
+import { addIcons } from 'ionicons';
+import { locationOutline } from 'ionicons/icons';
+import { Observable } from 'rxjs';
 
 import { COUNTIES, County } from '../shared/counties';
 import { OverpassService } from '../services/overpass-service';
 import { Station } from '../models/station.model';
 import { StationCardComponent } from '../components/station-card/station-card.component';
-import { addIcons } from 'ionicons';
-import { locationOutline } from 'ionicons/icons';
-import { Observable } from 'rxjs';
+import { FuelPricesService, FuelPrice } from '../services/fuel-prices-service';
 
 
 @Component({
@@ -32,13 +33,17 @@ export class HomePage {
   selectedCounties: string[] = [];
   fuelStations: Station[] = [];
   loading = false;
+  fuelPrices: Record<string, FuelPrice> = {};
 
   coordinates: any = "";
   lat: number = 0;
   long: number = 0;
   radius: number = 10;
 
-  constructor(private overpassService: OverpassService, private storage: Storage) {
+  constructor(
+    private overpassService: OverpassService,
+    private storage: Storage,
+    private fuelPricesService: FuelPricesService) {
     addIcons({ locationOutline });
   }
 
@@ -92,10 +97,11 @@ export class HomePage {
         this.fuelStations = stations;
         this.loading = false;
         console.log('Loaded stations:', stations);
+        this.loadPrices(stations);
       },
       error: (err) => {
         console.error('Overpass API error:', err);
-        this.loading = false; 
+        this.loading = false;
         this.loadFromJsonBlob();
       }
     });
@@ -107,10 +113,24 @@ export class HomePage {
       next: (stations) => {
         this.fuelStations = stations;
         this.loading = false;
+        console.log('Loaded stations from JSON blob:', stations);
       },
       error: (err) => {
         console.error('Error loading from JSON blob:', err);
         this.loading = false;
+      }
+    });
+  }
+
+  private loadPrices(stations: Station[]) {
+    const ids = stations.map(s => String(s.id));
+    this.fuelPricesService.getBatchPrices(ids).subscribe({
+      next: (prices) => {
+        this.fuelPrices = prices;
+        console.log('Loaded fuel prices:', prices);
+      },
+      error: (err) => {
+        console.error('Error loading prices:', err);
       }
     });
   }
