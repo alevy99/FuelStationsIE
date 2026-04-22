@@ -154,3 +154,16 @@
   0%, 100% { opacity: 1; }
   50% { opacity: 0.4; }
 }
+
+.update-btn {
+  flex-shrink: 0;
+  padding: 6px 14px;
+  border-radius: 20px;
+  border: 1.5px solid var(--ion-color-light-shade);
+  background: white;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--ion-color-dark);
+  cursor: pointer;
+  white-space: nowrap;
+}
