@@ -6,10 +6,13 @@ import {
   IonItem, IonLabel, IonSelect, IonSelectOption,
   IonSpinner
 } from '@ionic/angular/standalone';
+import { Storage } from '@ionic/storage-angular';
+
 import { COUNTIES, County } from '../shared/counties';
 import { OverpassService } from '../services/overpass-service';
 import { Station } from '../models/station.model';
 import { StationCardComponent } from '../components/station-card/station-card.component';
+
 
 @Component({
   selector: 'app-home',
@@ -28,10 +31,25 @@ export class HomePage {
   results: Station[] = [];
   loading = false;
 
-  constructor(private overpassService: OverpassService) {}
+  constructor(private overpassService: OverpassService, private storage: Storage) {}
+
+  async ionViewWillEnter() {
+    console.log('HomePage ionViewWillEnter');
+    await this.storage.create();
+    this.selectedCounties = await this.storage.get('selectedCounties') || [];
+    console.log('Loaded selected counties from storage:', this.selectedCounties);
+    this.loadData();
+  }
 
   onCountyChange() {
     this.loadData();
+    this.updateSelectedCounties();
+  }
+
+  async updateSelectedCounties() {
+    await this.storage.create();
+    await this.storage.set('selectedCounties', this.selectedCounties);
+    console.log('Updated selected counties in storage:', this.selectedCounties);
   }
 
   private loadData() {
