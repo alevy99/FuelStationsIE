@@ -12,47 +12,40 @@
 
 <ion-content class="ion-padding">
 
-  @if (station.hasDiesel) {
-    <p class="section-label">DIESEL</p>
-    <div class="availability-buttons">
-      <button class="avail-btn" [class.active--available]="dieselAvailable === true"
-        (click)="dieselAvailable = true">
-        <span class="avail-icon">✓</span>
-        <span>In Stock</span>
-      </button>
-      <button class="avail-btn" [class.active--unknown]="dieselAvailable === null"
-        (click)="dieselAvailable = null">
-        <span class="avail-icon">?</span>
-        <span>Unknown</span>
-      </button>
-      <button class="avail-btn" [class.active--unavailable]="dieselAvailable === false"
-        (click)="dieselAvailable = false">
-        <span class="avail-icon">✕</span>
-        <span>Out</span>
-      </button>
-    </div>
-  }
 
-  @if (station.hasUnleaded) {
-    <p class="section-label">UNLEADED / PETROL</p>
-    <div class="availability-buttons">
-      <button class="avail-btn" [class.active--available]="petrolAvailable === true"
-        (click)="petrolAvailable = true">
-        <span class="avail-icon">✓</span>
-        <span>In Stock</span>
-      </button>
-      <button class="avail-btn" [class.active--unknown]="petrolAvailable === null"
-        (click)="petrolAvailable = null">
-        <span class="avail-icon">?</span>
-        <span>Unknown</span>
-      </button>
-      <button class="avail-btn" [class.active--unavailable]="petrolAvailable === false"
-        (click)="petrolAvailable = false">
-        <span class="avail-icon">✕</span>
-        <span>Out</span>
-      </button>
-    </div>
-  }
+  <p class="section-label">DIESEL</p>
+  <div class="availability-buttons">
+    <button class="avail-btn" [class.active--available]="dieselAvailable === true" (click)="dieselAvailable = true">
+      <span class="avail-icon">✓</span>
+      <span>In Stock</span>
+    </button>
+    <button class="avail-btn" [class.active--unknown]="dieselAvailable === null" (click)="dieselAvailable = null">
+      <span class="avail-icon">?</span>
+      <span>Unknown</span>
+    </button>
+    <button class="avail-btn" [class.active--unavailable]="dieselAvailable === false" (click)="dieselAvailable = false">
+      <span class="avail-icon">✕</span>
+      <span>Out</span>
+    </button>
+  </div>
+
+
+
+  <p class="section-label">UNLEADED / PETROL</p>
+  <div class="availability-buttons">
+    <button class="avail-btn" [class.active--available]="petrolAvailable === true" (click)="petrolAvailable = true">
+      <span class="avail-icon">✓</span>
+      <span>In Stock</span>
+    </button>
+    <button class="avail-btn" [class.active--unknown]="petrolAvailable === null" (click)="petrolAvailable = null">
+      <span class="avail-icon">?</span>
+      <span>Unknown</span>
+    </button>
+    <button class="avail-btn" [class.active--unavailable]="petrolAvailable === false" (click)="petrolAvailable = false">
+      <span class="avail-icon">✕</span>
+      <span>Out</span>
+    </button>
+  </div>
 
   <div class="divider"></div>
 
@@ -77,31 +70,38 @@
   <div class="divider"></div>
 
   <p class="section-label">PRICES <span class="optional">(optional)</span></p>
+  <p class="price-hint">Enter price per litre (€{{ MIN_PRICE }} — €{{ MAX_PRICE }})</p>
   <div class="limits-row">
-    @if (station.hasDiesel) {
-      <div class="limit-field">
-        <label>Diesel /L</label>
-        <div class="input-wrap">
-          <span class="input-prefix">€</span>
-          <input type="number" step="0.001" placeholder="1.899" [(ngModel)]="diesel" />
-        </div>
+    
+    <div class="limit-field">
+      <label>Diesel /L</label>
+      <div class="input-wrap" [class.input-wrap--error]="diesel !== null && (diesel < MIN_PRICE || diesel > MAX_PRICE)">
+        <span class="input-prefix">€</span>
+        <input type="number" step="0.001" [placeholder]="'e.g. 1.899'" [(ngModel)]="diesel" [min]="MIN_PRICE"
+          [max]="MAX_PRICE" />
       </div>
-    }
-    @if (station.hasUnleaded) {
-      <div class="limit-field">
-        <label>Unleaded /L</label>
-        <div class="input-wrap">
-          <span class="input-prefix">€</span>
-          <input type="number" step="0.001" placeholder="1.799" [(ngModel)]="petrol" />
-        </div>
+    </div>
+    
+    
+    <div class="limit-field">
+      <label>Unleaded /L</label>
+      <div class="input-wrap" [class.input-wrap--error]="petrol !== null && (petrol < MIN_PRICE || petrol > MAX_PRICE)">
+        <span class="input-prefix">€</span>
+        <input type="number" step="0.001" [placeholder]="'e.g. 1.799'" [(ngModel)]="petrol" [min]="MIN_PRICE"
+          [max]="MAX_PRICE" />
       </div>
-    }
+    </div>
+    
   </div>
+
+  @if (!isPriceValid) {
+  <p class="error-msg">Price must be between €{{ MIN_PRICE }} and €{{ MAX_PRICE }}</p>
+  }
 
 </ion-content>
 
 <div class="submit-wrap">
-  <button class="submit-btn" (click)="submit()" [disabled]="submitting">
+  <button class="submit-btn" (click)="submit()" [disabled]="submitting || !isPriceValid">
     <ion-icon name="checkmark-outline"></ion-icon>
     {{ submitting ? 'Submitting...' : 'Submit Report' }}
   </button>

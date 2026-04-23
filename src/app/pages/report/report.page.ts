@@ -23,6 +23,13 @@ import { FuelPriceReport, FuelPricesService } from '../../services/fuel-prices-s
   ]
 })
 export class ReportPage implements OnInit {
+  readonly MIN_PRICE = 1.3;
+  readonly MAX_PRICE = 3.0;
+  readonly MIN_LITRES = 1;
+  readonly MAX_LITRES = 200;
+  readonly MIN_SPEND = 1;
+  readonly MAX_SPEND = 500;
+
   station!: Station;
 
   dieselAvailable: boolean | null = null;
@@ -54,6 +61,11 @@ export class ReportPage implements OnInit {
   }
 
   submit() {
+    if (!this.isPriceValid) {
+      console.warn('Invalid price');
+      return;
+    }
+
     this.submitting = true;
 
     const report: FuelPriceReport = {
@@ -87,7 +99,17 @@ export class ReportPage implements OnInit {
       error: (err) => {
         console.error('Error submitting report:', err);
         this.submitting = false;
+
+        if (err.status === 400) {
+          alert(err.error?.error ?? 'Invalid data');
+        }
       }
     });
+  }
+
+  get isPriceValid(): boolean {
+    if (this.petrol !== null && (this.petrol < this.MIN_PRICE || this.petrol > this.MAX_PRICE)) return false;
+    if (this.diesel !== null && (this.diesel < this.MIN_PRICE || this.diesel > this.MAX_PRICE)) return false;
+    return true;
   }
 }
