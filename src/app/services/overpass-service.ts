@@ -12,7 +12,7 @@ export class OverpassService {
 
   private apiUrl = 'https://overpass-api.de/api/interpreter';
 
-  private jsonBlobUrl = 'https://api.jsonblob.com/019db178-efd3-790d-bdba-384a272d7f23';
+  private jsonBlobUrl = 'https://api.jsonblob.com/019dbbd5-2a2f-79fa-841a-a517bab1b6d5';
 
   constructor(private http: HttpClient) { }
 
