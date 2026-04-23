@@ -32,7 +32,7 @@ export class StationCardComponent {
 
   openDetail() {
     this.router.navigate(['/station', this.station.id], {
-      state: { station: this.station }
+      state: { station: this.station, fuelPrice: this.fuelPrice }
     });
   }
 

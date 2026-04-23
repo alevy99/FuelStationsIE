@@ -37,6 +37,7 @@ export class StationDetailPage implements OnInit {
 
   ngOnInit() {
     this.station = history.state?.station;
+    this.fuelPrice = history.state?.fuelPrice ?? null;
 
     if (!this.station) {
       console.warn('No station data in route state. Trying to load by ID from URL...');
