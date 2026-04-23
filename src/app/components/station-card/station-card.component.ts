@@ -1,11 +1,11 @@
 import { Component, Input } from '@angular/core';
 import { Router } from '@angular/router';
-import { IonCard, IonCardContent, IonBadge, IonIcon, ModalController } from '@ionic/angular/standalone';
+import { IonCard, IonCardContent, IonBadge, IonIcon } from '@ionic/angular/standalone';
 import { CommonModule } from '@angular/common';
 import { Station } from '../../models/station.model';
 import { getBrandLogoURL } from 'src/app/shared/station-utils';
-import { FuelPrice } from '../../services/fuel-prices-service';
-import { ReportModalComponent } from '../report-modal/report-modal.component';
+import { FuelPricesService, FuelPrice } from '../../services/fuel-prices-service';
+
 
 @Component({
   selector: 'app-station-card',
@@ -19,8 +19,8 @@ export class StationCardComponent {
 
   constructor(
     private router: Router,
-    private modalCtrl: ModalController
-  ) {}
+    private fuelPricesService: FuelPricesService
+  ) { }
 
   getLogoUrl(brand: string | null): string | null {
     return getBrandLogoURL(brand);
@@ -36,19 +36,10 @@ export class StationCardComponent {
     });
   }
 
-  async openReport(event: Event) {
+  openReport(event: Event) {
     event.stopPropagation();
-
-    const modal = await this.modalCtrl.create({
-      component: ReportModalComponent,
-      componentProps: {
-        station: this.station,
-        currentPrice: this.fuelPrice
-      },
-      breakpoints: [0, 0.9],
-      initialBreakpoint: 0.9,
+    this.router.navigate(['/report', this.station.id], {
+      state: { station: this.station }
     });
-
-    await modal.present();
   }
 }

@@ -29,6 +29,9 @@ import { FuelPricesService, FuelPrice } from '../services/fuel-prices-service';
   ],
 })
 export class HomePage {
+
+  MAX_STATIONS = 20;
+
   counties: County[] = COUNTIES;
   selectedCounties: string[] = [];
   fuelStations: Station[] = [];
@@ -52,8 +55,19 @@ export class HomePage {
     await this.storage.create();
     this.selectedCounties = await this.storage.get('selectedCounties') || [];
     console.log('Loaded selected counties from storage:', this.selectedCounties);
-    if (this.selectedCounties.length > 0) {
-      this.loadData();
+
+    if (this.fuelStations.length === 0) {
+      if (this.selectedCounties.length > 0) {
+        this.loadStationsAndPrices();
+      }
+    } else {
+      const optimisticPrice = await this.storage.get('optimisticPrice');
+      if (optimisticPrice) {
+        this.fuelPrices[optimisticPrice.stationId] = optimisticPrice;
+        await this.storage.remove('optimisticPrice');
+      }
+
+      setTimeout(() => this.loadPrices(this.fuelStations), 3000);
     }
   }
 
@@ -62,11 +76,11 @@ export class HomePage {
     this.lat = this.coordinates.coords.latitude;
     this.long = this.coordinates.coords.longitude;
     console.log('Current position:', this.coordinates);
-    this.loadData(true);
+    this.loadStationsAndPrices(true);
   }
 
   onCountyChange() {
-    this.loadData();
+    this.loadStationsAndPrices();
     this.updateSelectedCounties();
   }
 
@@ -76,7 +90,7 @@ export class HomePage {
     console.log('Updated selected counties in storage:', this.selectedCounties);
   }
 
-  private loadData(nearMe: boolean = false) {
+  private loadStationsAndPrices(nearMe: boolean = false) {
     if (!nearMe && this.selectedCounties.length === 0) return;
 
     this.loading = true;
@@ -94,10 +108,10 @@ export class HomePage {
 
     observableStations.subscribe({
       next: (stations) => {
-        this.fuelStations = stations;
+        this.fuelStations = stations.slice(0, this.MAX_STATIONS);
         this.loading = false;
         console.log('Loaded stations:', stations);
-        this.loadPrices(stations);
+        this.loadPrices(this.fuelStations);
       },
       error: (err) => {
         console.error('Overpass API error:', err);
@@ -111,7 +125,7 @@ export class HomePage {
     this.loading = true;
     this.overpassService.getStationsFromJsonBlob().subscribe({
       next: (stations) => {
-        this.fuelStations = stations;
+        this.fuelStations = stations.slice(0, this.MAX_STATIONS);
         this.loading = false;
         console.log('Loaded stations from JSON blob:', stations);
       },
@@ -126,7 +140,7 @@ export class HomePage {
     const ids = stations.map(s => String(s.id));
     this.fuelPricesService.getBatchPrices(ids).subscribe({
       next: (prices) => {
-        this.fuelPrices = prices;
+        this.fuelPrices = { ...prices };
         console.log('Loaded fuel prices:', prices);
       },
       error: (err) => {
