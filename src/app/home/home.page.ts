@@ -30,7 +30,7 @@ import { FuelPricesService, FuelPrice } from '../services/fuel-prices-service';
 })
 export class HomePage {
 
-  MAX_STATIONS = 20;
+  MAX_STATIONS = 40;
 
   counties: County[] = COUNTIES;
   selectedCounties: string[] = [];
@@ -140,7 +140,7 @@ export class HomePage {
     const ids = stations.map(s => String(s.id));
     this.fuelPricesService.getBatchPrices(ids).subscribe({
       next: (prices) => {
-        this.fuelPrices = { ...prices };
+        this.fuelPrices = prices;
         console.log('Loaded fuel prices:', prices);
       },
       error: (err) => {
