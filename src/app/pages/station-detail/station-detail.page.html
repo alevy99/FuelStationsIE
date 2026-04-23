@@ -17,9 +17,7 @@
   <div class="detail-hero">
     <div class="logo-wrap--large">
       @if (getLogoUrl(station.brand)) {
-      <img [src]="getLogoUrl(station.brand)" 
-        [alt]="station.brand ?? ''" 
-        (error)="heroImg.style.display='none'"
+      <img [src]="getLogoUrl(station.brand)" [alt]="station.brand ?? ''" (error)="heroImg.style.display='none'"
         #heroImg />
       } @else {
       <span class="logo-fallback">⛽</span>
@@ -41,6 +39,66 @@
   </div>
 
   <ion-list inset>
+
+    @if (fuelPrice) {
+    <div class="fuel-detail-block">
+
+      <div class="fuel-detail-row">
+        @if (station.hasDiesel) {
+        <div class="fuel-col">
+          <p class="fuel-label">DIESEL</p>
+          <div class="availability">
+            <span class="dot" [class.dot--available]="fuelPrice.dieselAvailable"
+              [class.dot--unavailable]="fuelPrice.dieselAvailable === false"></span>
+            <span class="availability-text" [class.available]="fuelPrice.dieselAvailable"
+              [class.unavailable]="fuelPrice.dieselAvailable === false">
+              {{ fuelPrice.dieselAvailable ? 'In stock' : fuelPrice.dieselAvailable === false ? 'Out of stock' : '' }}
+            </span>
+          </div>
+          @if (fuelPrice.diesel) {
+          <p class="fuel-price">€{{ fuelPrice.diesel.toFixed(3) }}<span class="per-litre">/L</span></p>
+          }
+        </div>
+        }
+
+        <div class="fuel-divider"></div>
+
+        @if (station.hasUnleaded) {
+        <div class="fuel-col">
+          <p class="fuel-label">UNLEADED</p>
+          <div class="availability">
+            <span class="dot" [class.dot--available]="fuelPrice.petrolAvailable"
+              [class.dot--unavailable]="fuelPrice.petrolAvailable === false"></span>
+            <span class="availability-text" [class.available]="fuelPrice.petrolAvailable"
+              [class.unavailable]="fuelPrice.petrolAvailable === false">
+              {{ fuelPrice.petrolAvailable ? 'In stock' : fuelPrice.petrolAvailable === false ? 'Out of stock' : '' }}
+            </span>
+          </div>
+          @if (fuelPrice.petrol) {
+          <p class="fuel-price">€{{ fuelPrice.petrol.toFixed(3) }}<span class="per-litre">/L</span></p>
+          }
+        </div>
+        }
+      </div>
+
+      <div class="fuel-detail-footer">
+        @if (fuelPrice.priceLimit) {
+        <span class="limit-badge">⚠ €{{ fuelPrice.priceLimit }} limit</span>
+        }
+        @if (fuelPrice.litreLimit) {
+        <span class="limit-badge">⚠ {{ fuelPrice.litreLimit }}L limit</span>
+        }
+        <span class="report-count">{{ fuelPrice.reportCount }} reports</span>
+        <span class="price-timestamp">Updated: {{ fuelPrice.timestamp | date:'dd MMM, HH:mm' }}</span>
+      </div>
+
+    </div>
+    } @else {
+    <div class="fuel-detail-block fuel-detail-block--empty">
+      <p>No prices reported yet</p>
+      <p class="empty-hint">Be the first to report prices at this station</p>
+    </div>
+    }
 
     @if (station.address || station.city) {
     <ion-item>
@@ -70,26 +128,6 @@
     </ion-item>
     }
 
-    <ion-item>
-      <ion-icon name="pricetag-outline" slot="start" color="medium"></ion-icon>
-      <ion-label>
-        <p>Fuel Prices</p>
-        @if (fuelPrice) {
-          <h3>
-            @if (fuelPrice.petrol != null) {
-              <span>Unleaded: €{{ fuelPrice.petrol.toFixed(3) }} · </span>
-            }
-            @if (fuelPrice.diesel != null) {
-              <span>Diesel: €{{ fuelPrice.diesel.toFixed(3) }}</span>
-            }
-          </h3>
-          <p class="price-timestamp">Updated: {{ fuelPrice.timestamp | date:'dd MMM yyyy, HH:mm' }}</p>
-        } @else {
-          <h3>No prices reported yet</h3>
-        }
-      </ion-label>
-    </ion-item>
-
     @if (station.payment.cash !== null || station.payment.creditCards !== null) {
     <ion-item>
       <ion-icon name="card-outline" slot="start" color="medium"></ion-icon>
@@ -97,46 +135,46 @@
         <p>Payment</p>
         <h3>
           @if (station.payment.cash === true) {
-           <span>Cash · </span>
+          <span>Cash · </span>
           }
           @if (station.payment.creditCards === true) {
-           <span>Credit cards · </span>
+          <span>Credit cards · </span>
           }
           @if (station.payment.debitCards === true) {
-           <span>Debit cards</span>
+          <span>Debit cards</span>
           }
           @if (station.payment.cash === false && station.payment.creditCards !== true) {
-           <span>Card only</span>
+          <span>Card only</span>
           }
         </h3>
       </ion-label>
     </ion-item>
-  }
+    }
 
-  @if (station.hasCompressedAir || station.wheelchair || station.selfService !== null) {
+    @if (station.hasCompressedAir || station.wheelchair || station.selfService !== null) {
     <ion-item>
       <ion-icon name="construct-outline" slot="start" color="medium"></ion-icon>
       <ion-label>
         <p>Services</p>
         <h3>
           @if (station.hasCompressedAir) {
-           <span>Air pump · </span>
+          <span>Air pump · </span>
           }
           @if (station.wheelchair) {
-           <span>Wheelchair access · </span>
+          <span>Wheelchair access · </span>
           }
           @if (station.selfService === true) {
-           <span>Self-service</span>
+          <span>Self-service</span>
           }
           @if (station.selfService === false) {
-           <span>Attended</span>
+          <span>Attended</span>
           }
         </h3>
       </ion-label>
     </ion-item>
-  }
+    }
 
-  @if (station.website) {
+    @if (station.website) {
     <ion-item [href]="station.website" target="_blank">
       <ion-icon name="construct-outline" slot="start" color="medium"></ion-icon>
       <ion-label>
@@ -144,7 +182,7 @@
         <h3>{{ station.website }}</h3>
       </ion-label>
     </ion-item>
-  }          
+    }
 
   </ion-list>
 </ion-content>
