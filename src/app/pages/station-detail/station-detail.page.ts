@@ -7,7 +7,7 @@ import {
   IonLabel, IonIcon, IonList
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
-import { locationOutline, timeOutline, cardOutline, constructOutline, pricetagOutline  } from 'ionicons/icons';
+import { locationOutline, timeOutline, cardOutline, constructOutline, pricetagOutline } from 'ionicons/icons';
 import { Station } from '../../models/station.model';
 import { getBrandLogoURL } from 'src/app/shared/station-utils';
 import { FuelPricesService, FuelPrice } from '../../services/fuel-prices-service';
@@ -32,7 +32,7 @@ export class StationDetailPage implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
     private fuelPricesService: FuelPricesService) {
-    addIcons({ locationOutline, timeOutline, cardOutline, constructOutline, pricetagOutline  });
+    addIcons({ locationOutline, timeOutline, cardOutline, constructOutline, pricetagOutline });
   }
 
   ngOnInit() {
