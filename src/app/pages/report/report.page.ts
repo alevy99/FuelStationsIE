@@ -10,7 +10,7 @@ import {
 import { addIcons } from 'ionicons';
 import { checkmarkOutline } from 'ionicons/icons';
 import { Station } from '../../models/station.model';
-import { FuelPricesService } from '../../services/fuel-prices-service';
+import { FuelPriceReport, FuelPricesService } from '../../services/fuel-prices-service';
 
 @Component({
   selector: 'app-report',
@@ -56,7 +56,7 @@ export class ReportPage implements OnInit {
   submit() {
     this.submitting = true;
 
-    this.fuelPricesService.reportPrice({
+    const report: FuelPriceReport = {
       stationId: String(this.station.id),
       petrol: this.petrol,
       diesel: this.diesel,
@@ -64,7 +64,9 @@ export class ReportPage implements OnInit {
       dieselAvailable: this.dieselAvailable,
       priceLimit: this.priceLimit,
       litreLimit: this.litreLimit,
-    }).subscribe({
+    };
+
+    this.fuelPricesService.reportPrice(report).subscribe({
       next: async () => {
         this.submitting = false;
 
