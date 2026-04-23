@@ -1,11 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule, DatePipe } from '@angular/common';
-import {
-  IonHeader, IonToolbar, IonTitle, IonContent,
-  IonBackButton, IonButtons, IonBadge, IonItem,
-  IonLabel, IonIcon, IonList
-} from '@ionic/angular/standalone';
+import { IonHeader, IonToolbar, IonTitle, IonContent, IonBackButton, IonButtons, IonBadge, IonItem, IonLabel, IonIcon, IonList, IonButton } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import { locationOutline, timeOutline, cardOutline, constructOutline, pricetagOutline } from 'ionicons/icons';
 import { Station } from '../../models/station.model';
@@ -21,8 +17,9 @@ import { FuelPricesService, FuelPrice } from '../../services/fuel-prices-service
     CommonModule, DatePipe,
     IonHeader, IonToolbar, IonTitle, IonContent,
     IonBackButton, IonButtons, IonBadge,
-    IonItem, IonLabel, IonIcon, IonList
-  ],
+    IonItem, IonLabel, IonIcon, IonList,
+    IonButton
+],
 })
 export class StationDetailPage implements OnInit {
   station!: Station;
