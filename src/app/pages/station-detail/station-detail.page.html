@@ -44,7 +44,7 @@
     <div class="fuel-detail-block">
 
       <div class="fuel-detail-row">
-        @if (station.hasDiesel) {
+        
         <div class="fuel-col">
           <p class="fuel-label">DIESEL</p>
           <div class="availability">
@@ -59,11 +59,11 @@
           <p class="fuel-price">€{{ fuelPrice.diesel.toFixed(3) }}<span class="per-litre">/L</span></p>
           }
         </div>
-        }
+        
 
         <div class="fuel-divider"></div>
 
-        @if (station.hasUnleaded) {
+        
         <div class="fuel-col">
           <p class="fuel-label">UNLEADED</p>
           <div class="availability">
@@ -78,7 +78,7 @@
           <p class="fuel-price">€{{ fuelPrice.petrol.toFixed(3) }}<span class="per-litre">/L</span></p>
           }
         </div>
-        }
+        
       </div>
 
       <div class="fuel-detail-footer">
