@@ -46,16 +46,7 @@ export class StationDetailPage implements OnInit {
       if (id) {
         this.loadStationById(id);
       }
-    } else {
-      this.loadPrices();
     }
-  }
-
-  private loadPrices() {
-    this.fuelPricesService.getPrices(String(this.station.id))
-      .subscribe(price => {
-        this.fuelPrice = price;
-      });
   }
 
   private loadStationById(id: string) {
