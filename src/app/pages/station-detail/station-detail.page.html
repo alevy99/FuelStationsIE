@@ -71,10 +71,10 @@
         <p>Fuel Prices</p>
         @if (fuelPrice) {
           <h3>
-            @if (fuelPrice.petrol !== null) {
+            @if (fuelPrice.petrol != null) {
               <span>Unleaded: €{{ fuelPrice.petrol.toFixed(2) }} · </span>
             }
-            @if (fuelPrice.diesel !== null) {
+            @if (fuelPrice.diesel != null) {
               <span>Diesel: €{{ fuelPrice.diesel.toFixed(2) }}</span>
             }
           </h3>
