@@ -4,6 +4,11 @@
       <ion-back-button defaultHref="/home"></ion-back-button>
     </ion-buttons>
     <ion-title>{{ station.name }}</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="openReport()">
+        + Update
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
@@ -72,10 +77,10 @@
         @if (fuelPrice) {
           <h3>
             @if (fuelPrice.petrol != null) {
-              <span>Unleaded: €{{ fuelPrice.petrol.toFixed(2) }} · </span>
+              <span>Unleaded: €{{ fuelPrice.petrol.toFixed(3) }} · </span>
             }
             @if (fuelPrice.diesel != null) {
-              <span>Diesel: €{{ fuelPrice.diesel.toFixed(2) }}</span>
+              <span>Diesel: €{{ fuelPrice.diesel.toFixed(3) }}</span>
             }
           </h3>
           <p class="price-timestamp">Updated: {{ fuelPrice.timestamp | date:'dd MMM yyyy, HH:mm' }}</p>

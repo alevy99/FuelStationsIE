@@ -64,4 +64,13 @@ export class StationDetailPage implements OnInit {
   get mapsUrl(): string {
     return `https://www.google.com/maps/search/?api=1&query=${this.station.lat},${this.station.lon}`;
   }
+
+  openReport() {
+    this.router.navigate(['/report', this.station.id], {
+      state: {
+        station: this.station,
+        fuelPrice: this.fuelPrice
+      }
+    });
+  }
 }
