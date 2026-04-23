@@ -3,6 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule, DatePipe } from '@angular/common';
 import { IonHeader, IonToolbar, IonTitle, IonContent, IonBackButton, IonButtons, IonBadge, IonItem, IonLabel, IonIcon, IonList, IonButton } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
+import { Storage } from '@ionic/storage-angular';
 import { locationOutline, timeOutline, cardOutline, constructOutline, pricetagOutline } from 'ionicons/icons';
 import { Station } from '../../models/station.model';
 import { getBrandLogoURL } from 'src/app/shared/station-utils';
@@ -28,7 +29,8 @@ export class StationDetailPage implements OnInit {
   constructor(
     private router: Router,
     private route: ActivatedRoute,
-    private fuelPricesService: FuelPricesService) {
+    private fuelPricesService: FuelPricesService,
+    private storage: Storage) {
     addIcons({ locationOutline, timeOutline, cardOutline, constructOutline, pricetagOutline });
   }
 
@@ -44,6 +46,26 @@ export class StationDetailPage implements OnInit {
         this.loadStationById(id);
       }
     }
+  }
+
+  async ionViewWillEnter() {
+    console.log('HomePage ionViewWillEnter');
+    await this.storage.create();
+
+    const optimisticPrice = await this.storage.get('optimisticPrice');
+    if (optimisticPrice) {
+      this.fuelPrice = optimisticPrice;
+      //await this.storage.remove('optimisticPrice');
+    }
+
+    setTimeout(() => this.loadPrices(), 3000);
+  }
+
+  private loadPrices() {
+    this.fuelPricesService.getPrices(String(this.station.id))
+      .subscribe(price => {
+        this.fuelPrice = price;
+      });
   }
 
   private loadStationById(id: string) {
