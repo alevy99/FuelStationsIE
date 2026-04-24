@@ -19,4 +19,8 @@ export const routes: Routes = [
     path: 'report/:stationId',
     loadComponent: () => import('./pages/report/report.page').then(m => m.ReportPage)
   },
+  {
+    path: 'about',
+    loadComponent: () => import('./pages/about/about.page').then( m => m.AboutPage)
+  },
 ];
