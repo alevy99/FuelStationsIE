@@ -1,12 +1,13 @@
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { IonHeader, IonToolbar, IonTitle, IonContent, IonItem, IonLabel, IonSelect, IonSelectOption, IonSpinner, IonButton, IonRange, IonIcon } from '@ionic/angular/standalone';
+import { IonHeader, IonToolbar, IonTitle, IonContent, IonItem, IonLabel, IonSelect, IonSelectOption, IonSpinner, IonButton, IonRange, IonIcon, IonButtons } from '@ionic/angular/standalone';
 import { Storage } from '@ionic/storage-angular';
 import { Geolocation } from '@capacitor/geolocation';
 import { addIcons } from 'ionicons';
-import { locationOutline } from 'ionicons/icons';
+import { informationCircleOutline, locationOutline } from 'ionicons/icons';
 import { Observable } from 'rxjs';
+import { Router } from '@angular/router';
 
 import { COUNTIES, County } from '../shared/counties';
 import { OverpassService } from '../services/overpass-service';
@@ -25,7 +26,8 @@ import { FuelPricesService, FuelPrice } from '../services/fuel-prices-service';
     IonItem, IonLabel, IonSelect, IonSelectOption,
     IonSpinner, StationCardComponent,
     IonButton, IonRange,
-    IonIcon
+    IonIcon,
+    IonButtons
   ],
 })
 export class HomePage {
@@ -46,8 +48,9 @@ export class HomePage {
   constructor(
     private overpassService: OverpassService,
     private storage: Storage,
-    private fuelPricesService: FuelPricesService) {
-    addIcons({ locationOutline });
+    private fuelPricesService: FuelPricesService,
+    private router: Router) {
+    addIcons({ locationOutline, informationCircleOutline });
   }
 
   async ionViewWillEnter() {
@@ -94,9 +97,6 @@ export class HomePage {
     if (!nearMe && this.selectedCounties.length === 0) return;
 
     this.loading = true;
-
-    // this.loadFromJsonBlob();
-    // return;
 
     let observableStations: Observable<Station[]>;
 
@@ -147,5 +147,9 @@ export class HomePage {
         console.error('Error loading prices:', err);
       }
     });
+  }
+
+  goToAbout() {
+    this.router.navigate(['/about']);
   }
 }
