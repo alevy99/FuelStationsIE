@@ -11,8 +11,6 @@
 </ion-header>
 
 <ion-content class="ion-padding">
-
-
   <p class="section-label">DIESEL</p>
   <div class="availability-buttons">
     <button class="avail-btn" [class.active--available]="dieselAvailable === true" (click)="dieselAvailable = true">
@@ -28,8 +26,6 @@
       <span>Out</span>
     </button>
   </div>
-
-
 
   <p class="section-label">UNLEADED / PETROL</p>
   <div class="availability-buttons">
@@ -82,7 +78,6 @@
       </div>
     </div>
     
-    
     <div class="limit-field">
       <label>Unleaded /L</label>
       <div class="input-wrap" [class.input-wrap--error]="petrol !== null && (petrol < MIN_PRICE || petrol > MAX_PRICE)">
@@ -91,13 +86,11 @@
           [max]="MAX_PRICE" />
       </div>
     </div>
-    
   </div>
 
   @if (!isPriceValid) {
   <p class="error-msg">Price must be between €{{ MIN_PRICE }} and €{{ MAX_PRICE }}</p>
   }
-
 </ion-content>
 
 <div class="submit-wrap">

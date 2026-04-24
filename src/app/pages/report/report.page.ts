@@ -108,8 +108,8 @@ export class ReportPage implements OnInit {
   }
 
   get isPriceValid(): boolean {
-    if (this.petrol !== null && (this.petrol < this.MIN_PRICE || this.petrol > this.MAX_PRICE)) return false;
-    if (this.diesel !== null && (this.diesel < this.MIN_PRICE || this.diesel > this.MAX_PRICE)) return false;
+    if (this.petrol != null && (this.petrol < this.MIN_PRICE || this.petrol > this.MAX_PRICE)) return false;
+    if (this.diesel != null && (this.diesel < this.MIN_PRICE || this.diesel > this.MAX_PRICE)) return false;
     return true;
   }
 }
